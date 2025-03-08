@@ -1,6 +1,3 @@
-// Import jsPDF from the jspdf library
-//const { jsPDF } = window.jspdf;
-
 // Function to format numbers
 function formatNumber(value) {
     return new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
@@ -97,20 +94,9 @@ function generateEmployeeReports(data) {
             basicReportHTML += '<div class="employee-basic-details">'; // Start a new section for basic details
             fullReportHTML += '<div class="employee-basic-details">'; // Start a new section for basic details
 
-            let y = 20; // Initialize y-coordinate for PDF text
-            pdf.addFileToVFS('Roboto-Regular.ttf', font);
-            pdf.addFont('Roboto-Regular.ttf', 'Roboto', 'normal'); 
-            pdf.setFont('Roboto');
-            pdf.setFontSize(12); // Set font size for PDF
-            if (!firstPage) pdf.addPage(); // Add a new page if not the first page
-            firstPage = false; // Set firstPage flag to false
-            pdf.text(`Employee Report`, 10, 10); // Add title to PDF
-
             // Combine "Име" and "Презиме" into one field
             const fullName = `${row[headerRow.indexOf("Име")]} ${row[headerRow.indexOf("Презиме")]}`;
             basicReportHTML += `<p><strong>Име и Презиме:</strong> ${fullName}</п>`;
-            pdf.text(`Име и Презиме: ${fullName}`, 10, y);
-            y += 7;
 
             // Add "ЕМБГ" and "Број на трансакциска сметка"
             ["ЕМБГ", "Број на трансакциска сметка"].forEach((header) => {
@@ -118,8 +104,6 @@ function generateEmployeeReports(data) {
                 if (index !== -1 && row[index].trim() !== "") {
                     const value = row[index];
                     basicReportHTML += `<p><strong>${header}:</strong> ${value}</п>`;
-                    pdf.text(`${header}: ${value}`, 10, y);
-                    y += 7;
                 }
             });
 
@@ -136,11 +120,6 @@ function generateEmployeeReports(data) {
                     </div>
                 </div>
             `;
-            pdf.text(`Плата во вкупен износ: ${formatNumber(parseFloat(row[headerRow.indexOf("Плата во вкупен износ")]))}`, 10, y);
-            y += 7;
-            pdf.text(`Ефективна нето плата: ${formatNumber(parseFloat(row[headerRow.indexOf("Ефективна нето плата")]))}`, 10, y);
-            y += 7;
-
             basicReportHTML += "</div>"; // Close the basic details section
             basicReportHTML += "</div>"; // Close the highlight section
             fullReportHTML += "</div>"; // Close the basic details section
@@ -158,10 +137,8 @@ function generateEmployeeReports(data) {
             basicReport.slice(6).forEach((header) => {
                 const index = headerRow.indexOf(header);
                 if (index !== -1 && row[index].trim() !== "" && row[index] !== "0.00") {
-                    const value = row[index]; //formatNumber(parseFloat(row[index]));
+                    const value = row[index];
                     basicReportHTML += `<tr><td><strong>${header}</strong></td><td class="align-right">${formatNumber(value)}</td></tr>`;
-                    pdf.text(`${header}: ${formatNumber(value)}`, 10, y);
-                    y += 7;
                 }
             });
             basicReportHTML += '</tbody></table>';
@@ -171,8 +148,6 @@ function generateEmployeeReports(data) {
                 const header = headerRow[index] || `Field ${index + 1}`; // Get header or default field name
                 if (value.trim() !== "") { // If the cell is not empty
                     fullReportHTML += `<p><strong>${header}:</strong> ${value}</п>`; // Add field to full HTML report
-                    pdf.text(`${header}: ${value}`, 10, y); // Add field to PDF
-                    y += 7; // Increment y-coordinate for next line
                 }
             });
 
@@ -189,36 +164,29 @@ function generateEmployeeReports(data) {
     console.log("Generated Full HTML Report:", fullReportHTML); // Debug log
     document.getElementById("basicReport").innerHTML = basicReportHTML; // Set the basic report HTML
     document.getElementById("fullReport").innerHTML = fullReportHTML; // Set the full report HTML
+
+    // Generate the PDF from the final basic report HTML
     document.getElementById("downloadPdf").style.display = "block"; // Show the download button
     document.getElementById("downloadPdf").onclick = function () {
-        pdf.save("employee_reports.pdf"); // Save the PDF when the button is clicked
-    };
-
-    // Toggle button functionality
-    document.getElementById("toggleReport").onclick = function () {
-        const basicReport = document.getElementById("basicReport");
-        const fullReport = document.getElementById("fullReport");
-        const toggleButton = document.getElementById("toggleReport");
-        if (basicReport.style.display === "none") {
-            basicReport.style.display = "block";
-            fullReport.style.display = "none";
-            toggleButton.textContent = "Целосен МПИН извештај";
-        } else {
-            basicReport.style.display = "none";
-            fullReport.style.display = "block";
-            toggleButton.textContent = "Основен МПИН извештај";
-        }
+        pdf.html(document.getElementById("basicReport"), {
+            callback: function (pdf) {
+                pdf.save("employee_reports.pdf"); // Save the PDF when the button is clicked
+            },
+            margin: [10, 10, 10, 10],
+            x: 10,
+            y: 10
+        });
     };
 }
 
-// Function to toggle the visibility of the "Повеќе детали" section
-function toggleDetails(button) {
-    const detailsSection = button.closest('.details-section').nextElementSibling;
-    if (detailsSection.style.display === 'none') {
-        detailsSection.style.display = 'block';
-        button.textContent = '-';
+// Toggle the details section visibility
+function toggleDetails(btn) {
+    const detailsSection = btn.closest('.employee-card').querySelector('.employee-details');
+    if (detailsSection.style.display === "none") {
+        detailsSection.style.display = "block";
+        btn.innerText = "-"; // Change button text to indicate collapse
     } else {
-        detailsSection.style.display = 'none';
-        button.textContent = '+';
+        detailsSection.style.display = "none";
+        btn.innerText = "+"; // Change button text to indicate expand
     }
 }
