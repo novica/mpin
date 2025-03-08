@@ -1,4 +1,3 @@
-import jsPDF from 'jspdf';
 // Import jsPDF from the jspdf library
 const { jsPDF } = window.jspdf;
 
