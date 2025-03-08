@@ -1,0 +1,196 @@
+/* General styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+input[type="file"] {
+    display: block;
+    margin: 20px auto;
+}
+
+button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.report-section {
+    margin: 20px 0;
+}
+
+.employee-card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.employee-card h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #007bff;
+    text-align: center;
+}
+
+.employee-card h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.employee-card p {
+    margin: 5px 0;
+    color: #555;
+}
+.employee-basic-details {
+    flex: 1;
+}
+
+.employee-basic-details,
+.employee-details {
+    margin-top: 10px;
+}
+
+.employee-basic-details p,
+.employee-details p {
+    margin: 5px 0;
+}
+
+.print-btn {
+    margin-top: 10px;
+}
+
+/* Table layout styles */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.report-table th,
+.report-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.report-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.report-header .company-info {
+    flex: 1;
+}
+
+.report-header .period-info {
+    flex: 1;
+    text-align: right;
+}
+
+.report-header .logo-placeholder {
+    width: 100px;
+    height: 100px;
+    background-color: #ccc;
+    margin-bottom: 10px;
+}
+
+/* Highlight "Во кратки црти" section */
+.highlight-section {
+    background-color: #e0f7fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+}
+
+.highlight-section h3 {
+    font-size: 1.5em;
+    color: #007bff;
+}
+
+/* Smaller font for "Повеќе детали" section */
+.details-section {
+    font-size: 0.9em;
+}
+
+/* Print styles */
+@media print {
+    body {
+        margin: 0;
+    }
+
+    .print-btn,
+    .toggle-btn,
+    input[type="file"] {
+        display: none;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+
+    .employee-card {
+        page-break-inside: avoid;
+    }
+}
+
+.toggle-details-btn {
+    background: #007bff;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.left-align {
+    text-align: left;
+}
+
+.right-align {
+    text-align: right;
+}
+
+.employee-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.employee-info .left-align {
+    text-align: left;
+    flex: 1;
+}
+
+.employee-info .right-align {
+    text-align: right;
+    flex: 1;
+}
