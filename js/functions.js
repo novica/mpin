@@ -1,3 +1,4 @@
+import jsPDF from 'jspdf';
 // Import jsPDF from the jspdf library
 const { jsPDF } = window.jspdf;
 
@@ -98,6 +99,9 @@ function generateEmployeeReports(data) {
             fullReportHTML += '<div class="employee-basic-details">'; // Start a new section for basic details
 
             let y = 20; // Initialize y-coordinate for PDF text
+            pdf.addFileToVFS('Roboto-Regular.ttf', robotoFontBase64);
+            pdf.addFont('Roboto-Regular.ttf', 'Roboto', 'normal'); 
+            pdf.setFont('Roboto');
             pdf.setFontSize(12); // Set font size for PDF
             if (!firstPage) pdf.addPage(); // Add a new page if not the first page
             firstPage = false; // Set firstPage flag to false
