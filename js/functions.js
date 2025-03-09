@@ -6,9 +6,9 @@ document
         if (!file) return; // If no file is selected, do nothing
 
         const reader = new FileReader(); // Create a new FileReader instance
+        reader.readAsText(file, 'Windows-1251'); // Read the file as text with specified encoding
         reader.onload = loadFile; // Assign the separate function
 
-        reader.readAsText(file, 'Windows-1251'); // Read the file as text with specified encoding
     });
 
 // Function to generate employee reports
@@ -206,7 +206,7 @@ function generatePdf() {
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Set PDF properties
     });
 }
-
+// Function to read and parse the file content
 function loadFile(e) {
     const text = e.target.result; // Get the file content
     const normalizedText = text.replace(/\r\n/g, '\n'); // Normalize line endings to LF
