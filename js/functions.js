@@ -1,4 +1,3 @@
-
 // Add an event listener to the file input element
 document
     .getElementById("fileInput")
