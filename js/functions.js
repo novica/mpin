@@ -66,7 +66,7 @@ function generateEmployeeReports(data) {
                         <div class="logo-placeholder"></div>
                         <p><strong>Правно лице:</strong> ${data[2][2]}</p>
                         <p><strong>ЕДБ:</strong> ${data[2][0]}</p>
-                        <p><strong>ЕМБС:</strong> ${data[2][1]}</п>
+                        <p><strong>ЕМБС:</strong> ${data[2][1]}</p>
                     </div>
                     <div class="period-info">
                         <p><strong>За период:</strong> ${monthYear}</p>
@@ -77,12 +77,12 @@ function generateEmployeeReports(data) {
                 <div class="report-header">
                     <div class="company-info">
                         <div class="logo-placeholder"></div>
-                        <p><strong>Правно лице:</strong> ${data[2][2]}</п>
-                        <p><strong>ЕДБ:</strong> ${data[2][0]}</п>
-                        <p><strong>ЕМБС:</strong> ${data[2][1]}</п>
+                        <p><strong>Правно лице:</strong> ${data[2][2]}</p>
+                        <p><strong>ЕДБ:</strong> ${data[2][0]}</p>
+                        <p><strong>ЕМБС:</strong> ${data[2][1]}</p>
                     </div>
                     <div class="period-info">
-                        <p><strong>За период:</strong> ${monthYear}</п>
+                        <p><strong>За период:</strong> ${monthYear}</p>
                     </div>
                 </div>
             `;
@@ -96,14 +96,14 @@ function generateEmployeeReports(data) {
 
             // Combine "Име" and "Презиме" into one field
             const fullName = `${row[headerRow.indexOf("Име")]} ${row[headerRow.indexOf("Презиме")]}`;
-            basicReportHTML += `<p><strong>Име и Презиме:</strong> ${fullName}</п>`;
+            basicReportHTML += `<p><strong>Име и Презиме:</strong> ${fullName}</p>`;
 
             // Add "ЕМБГ" and "Број на трансакциска сметка"
             ["ЕМБГ", "Број на трансакциска сметка"].forEach((header) => {
                 const index = headerRow.indexOf(header);
                 if (index !== -1 && row[index].trim() !== "") {
                     const value = row[index];
-                    basicReportHTML += `<p><strong>${header}:</strong> ${value}</п>`;
+                    basicReportHTML += `<p><strong>${header}:</strong> ${value}</p>`;
                 }
             });
 
@@ -111,12 +111,12 @@ function generateEmployeeReports(data) {
             basicReportHTML += `
                 <div class="employee-info">
                     <div class="left-align">
-                        <p><strong>Плата во вкупен износ:</strong></п>
-                        <p><strong>Ефективна нето плата:</strong></п>
+                        <p><strong>Плата во вкупен износ:</strong></p>
+                        <p><strong>Ефективна нето плата:</strong></p>
                     </div>
                     <div class="right-align">
-                        <p>${formatNumber(parseFloat(row[headerRow.indexOf("Плата во вкупен износ")]))}</п>
-                        <p>${formatNumber(parseFloat(row[headerRow.indexOf("Ефективна нето плата")]))}</п>
+                        <p>${formatNumber(parseFloat(row[headerRow.indexOf("Плата во вкупен износ")]))}</p>
+                        <p>${formatNumber(parseFloat(row[headerRow.indexOf("Ефективна нето плата")]))}</p>
                     </div>
                 </div>
             `;
@@ -133,12 +133,12 @@ function generateEmployeeReports(data) {
 
             // Add remaining fields in a table
             basicReportHTML += '<table class="report-table">';
-            basicReportHTML += '<thead><tr><th>Поле</th><th class="align-right">Износ</th></tr></thead><tbody>';
+            basicReportHTML += '<thead><tr><th>Поле</th><th>Износ</th></tr></thead><tbody>';
             basicReport.slice(6).forEach((header) => {
                 const index = headerRow.indexOf(header);
                 if (index !== -1 && row[index].trim() !== "" && row[index] !== "0.00") {
                     const value = row[index];
-                    basicReportHTML += `<tr><td><strong>${header}</strong></td><td class="align-right">${formatNumber(value)}</td></tr>`;
+                    basicReportHTML += `<tr><td><strong>${header}</strong></td><td class="right-align">${formatNumber(value)}</td></tr>`;
                 }
             });
             basicReportHTML += '</tbody></table>';
@@ -147,7 +147,7 @@ function generateEmployeeReports(data) {
             row.forEach((value, index) => {
                 const header = headerRow[index] || `Field ${index + 1}`; // Get header or default field name
                 if (value.trim() !== "") { // If the cell is not empty
-                    fullReportHTML += `<p><strong>${header}:</strong> ${value}</п>`; // Add field to full HTML report
+                    fullReportHTML += `<p><strong>${header}:</strong> ${value}</p>`; // Add field to full HTML report
                 }
             });
 
@@ -160,15 +160,16 @@ function generateEmployeeReports(data) {
     }
 
     // Display the HTML reports
-    console.log("Generated Basic HTML Report:", basicReportHTML); // Debug log
-    console.log("Generated Full HTML Report:", fullReportHTML); // Debug log
+    //console.log("Generated Basic HTML Report:", basicReportHTML); // Debug log
+    //console.log("Generated Full HTML Report:", fullReportHTML); // Debug log
     document.getElementById("basicReport").innerHTML = basicReportHTML; // Set the basic report HTML
     document.getElementById("fullReport").innerHTML = fullReportHTML; // Set the full report HTML
 
     // Generate the PDF from the final basic report HTML
     document.getElementById("downloadPdf").style.display = "block"; // Show the download button
+
     document.getElementById("downloadPdf").onclick = function () {
-        pdf.html(document.getElementById("basicReport"), {
+        pdf.html("basicReportHTML", {
             callback: function (pdf) {
                 pdf.save("employee_reports.pdf"); // Save the PDF when the button is clicked
             },
@@ -177,6 +178,22 @@ function generateEmployeeReports(data) {
             y: 10
         });
     };
+// Toggle button functionality
+document.getElementById("toggleReport").onclick = function () {
+    const basicReport = document.getElementById("basicReport");
+    const fullReport = document.getElementById("fullReport");
+    const toggleButton = document.getElementById("toggleReport");
+    if (basicReport.style.display === "none") {
+        basicReport.style.display = "block";
+        fullReport.style.display = "none";
+        toggleButton.textContent = "Целосен МПИН извештај";
+    } else {
+        basicReport.style.display = "none";
+        fullReport.style.display = "block";
+        toggleButton.textContent = "Основен МПИН извештај";
+    }
+};
+
 }
 
 // Toggle the details section visibility
