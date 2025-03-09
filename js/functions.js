@@ -6,19 +6,7 @@ document
         if (!file) return; // If no file is selected, do nothing
 
         const reader = new FileReader(); // Create a new FileReader instance
-        reader.onload = function (e) {
-            const text = e.target.result; // Get the file content
-            const normalizedText = text.replace(/\r\n/g, '\n'); // Normalize line endings to LF
-
-            // Parse the file content using PapaParse
-            Papa.parse(normalizedText, {
-                delimiter: ";", // Specify the delimiter
-                complete: function (results) {
-                    console.log("Parsing complete:", results); // Debug log
-                    generateEmployeeReports(results.data); // Generate employee reports
-                },
-            });
-        };
+        reader.onload = loadFile; // Assign the separate function
 
         reader.readAsText(file, 'Windows-1251'); // Read the file as text with specified encoding
     });
@@ -216,5 +204,19 @@ function generatePdf() {
         image: { type: 'jpeg', quality: 0.98 }, // Image quality
         html2canvas: { scale: 2 }, // Increase the rendering scale for better quality
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Set PDF properties
+    });
+}
+
+function loadFile(e) {
+    const text = e.target.result; // Get the file content
+    const normalizedText = text.replace(/\r\n/g, '\n'); // Normalize line endings to LF
+
+    // Parse the file content using PapaParse
+    Papa.parse(normalizedText, {
+        delimiter: ";", // Specify the delimiter
+        complete: function (results) {
+            console.log("Parsing complete:", results); // Debug log
+            generateEmployeeReports(results.data); // Generate employee reports
+        },
     });
 }
