@@ -1,7 +1,3 @@
-// Function to format numbers
-function formatNumber(value) {
-    return new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
-}
 
 // Add an event listener to the file input element
 document
@@ -34,8 +30,6 @@ function generateEmployeeReports(data) {
     if (data.length < 4) return;  // Ensure there are at least 3 rows to process
     let basicReportHTML = ""; // Initialize the basic HTML report string
     let fullReportHTML = ""; // Initialize the full HTML report string
-    const pdf = new jsPDF(); // Create a new jsPDF instance
-    let firstPage = true; // Flag to track if it's the first page
     let companyInfo = '';   // To store tax number, id, and name
     let monthYear = ''; // To store month and year
 
@@ -168,23 +162,16 @@ function generateEmployeeReports(data) {
     // Generate the PDF from the final basic report HTML
     document.getElementById("downloadPdf").style.display = "block"; // Show the download button
 
-    document.getElementById("downloadPdf").onclick = function () {
-        let detailsSection = document.querySelector(".employee-details");
-        if (detailsSection) {
-            detailsSection.style.display = "block"; // Make sure it's visible
-        }
-    
-        let element = document.getElementById("basicReport");
+    // Attach the generatePdf function to the download button
+    document.getElementById("downloadPdf").onclick = generatePdf;
 
-        html2pdf(element, {
-            filename: 'report.pdf', // Set the file name for the PDF
-            image: { type: 'jpeg', quality: 0.98 }, // Image quality
-            html2canvas: { scale: 2 }, // Increase the rendering scale for better quality
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Set PDF properties
-        });
-    };
-// Toggle button functionality
-document.getElementById("toggleReport").onclick = function () {
+    // Toggle button functionality
+    document.getElementById("toggleReport").onclick = toggleReportVisibility;
+
+}
+
+// Function to toggle the visibility of the basic and full reports
+function toggleReportVisibility() {
     const basicReport = document.getElementById("basicReport");
     const fullReport = document.getElementById("fullReport");
     const toggleButton = document.getElementById("toggleReport");
@@ -197,11 +184,9 @@ document.getElementById("toggleReport").onclick = function () {
         fullReport.style.display = "block";
         toggleButton.textContent = "Основен МПИН извештај";
     }
-};
-
 }
 
-// Toggle the details section visibility
+// Function to toggle the details section visibility
 function toggleDetails(btn) {
     const detailsSection = btn.closest('.employee-card').querySelector('.employee-details');
     if (detailsSection.style.display === "none") {
@@ -211,4 +196,26 @@ function toggleDetails(btn) {
         detailsSection.style.display = "none";
         btn.innerText = "+"; // Change button text to indicate expand
     }
+}
+
+// Function to format numbers
+function formatNumber(value) {
+    return new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+}
+
+// Function to generate the PDF from the final basic report HTML
+function generatePdf() {
+    let detailsSection = document.querySelector(".employee-details");
+    if (detailsSection) {
+        detailsSection.style.display = "block"; // Make sure it's visible
+    }
+
+    let element = document.getElementById("basicReport");
+
+    html2pdf(element, {
+        filename: 'report.pdf', // Set the file name for the PDF
+        image: { type: 'jpeg', quality: 0.98 }, // Image quality
+        html2canvas: { scale: 2 }, // Increase the rendering scale for better quality
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Set PDF properties
+    });
 }
