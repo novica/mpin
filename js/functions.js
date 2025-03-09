@@ -169,13 +169,18 @@ function generateEmployeeReports(data) {
     document.getElementById("downloadPdf").style.display = "block"; // Show the download button
 
     document.getElementById("downloadPdf").onclick = function () {
-        pdf.html("basicReportHTML", {
-            callback: function (pdf) {
-                pdf.save("employee_reports.pdf"); // Save the PDF when the button is clicked
-            },
-            margin: [10, 10, 10, 10],
-            x: 10,
-            y: 10
+        let detailsSection = document.querySelector(".employee-details");
+        if (detailsSection) {
+            detailsSection.style.display = "block"; // Make sure it's visible
+        }
+    
+        let element = document.getElementById("basicReport");
+
+        html2pdf(element, {
+            filename: 'report.pdf', // Set the file name for the PDF
+            image: { type: 'jpeg', quality: 0.98 }, // Image quality
+            html2canvas: { scale: 2 }, // Increase the rendering scale for better quality
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Set PDF properties
         });
     };
 // Toggle button functionality
