@@ -206,6 +206,7 @@ function generatePdf() {
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Set PDF properties
     });
 }
+
 // Function to read and parse the file content
 function loadFile(e) {
     const text = e.target.result; // Get the file content
@@ -220,3 +221,86 @@ function loadFile(e) {
         },
     });
 }
+
+// Function to generate basic report HTML from default values
+function generateBasicReportHTMLFromDefaults() {
+    let basicReportHTML = '<div class="employee-card">';
+    basicReportHTML += `<h2>Месечен извештај за плата</h2>`;
+
+    // Add company info and period info
+    basicReportHTML += `
+        <div class="report-header">
+            <div class="company-info">
+                <div class="logo-placeholder"></div>
+                <p><strong>Правно лице:</strong> ${defaultBasicReportValues["Правно лице"]}</p>
+                <p><strong>ЕДБ:</strong> ${defaultBasicReportValues["ЕДБ"]}</p>
+                <p><strong>ЕМБС:</strong> ${defaultBasicReportValues["ЕМБС"]}</p>
+            </div>
+            <div class="period-info">
+                <p><strong>За период:</strong> Месец: ${defaultBasicReportValues["Месец"]} Година: ${defaultBasicReportValues["Година"]}</p>
+            </div>
+        </div>
+    `;
+
+    // Add "во кратки црти" header
+    basicReportHTML += `<div class="highlight-section"><h3>Во кратки црти</h3>`;
+
+    // Create a new section for the first six fields
+    basicReportHTML += '<div class="employee-basic-details">'; // Start a new section for basic details
+
+    // Combine "Име" and "Презиме" into one field
+    const fullName = `${defaultBasicReportValues["Име"]} ${defaultBasicReportValues["Презиме"]}`;
+    basicReportHTML += `<p><strong>Име и Презиме:</strong> ${fullName}</p>`;
+
+    // Add "ЕМБГ" and "Број на трансакциска сметка"
+    ["ЕМБГ", "Број на трансакциска сметка"].forEach((header) => {
+        const value = defaultBasicReportValues[header];
+        if (value.trim() !== "") {
+            basicReportHTML += `<p><strong>${header}:</strong> ${value}</p>`;
+        }
+    });
+
+    // Add salary info on the right
+    basicReportHTML += `
+        <div class="employee-info">
+            <div class="left-align">
+                <p><strong>Плата во вкупен износ:</strong></p>
+                <p><strong>Ефективна нето плата:</strong></p>
+            </div>
+            <div class="right-align">
+                <p>${formatNumber(parseFloat(defaultBasicReportValues["Плата во вкупен износ"]))}</p>
+                <p>${formatNumber(parseFloat(defaultBasicReportValues["Ефективна нето плата"]))}</p>
+            </div>
+        </div>
+    `;
+    basicReportHTML += "</div>"; // Close the basic details section
+    basicReportHTML += "</div>"; // Close the highlight section
+
+    // Add "Повеќе детали" header with a button to collapse/expand the section
+    basicReportHTML += `<h3 class="details-section">Повеќе детали <button class="toggle-details-btn" onclick="toggleDetails(this)">+</button></h3>`;
+
+    // Create a new section for the remaining fields
+    basicReportHTML += '<div class="employee-details details-section" style="display: none;">'; // Start a new section for details
+
+    // Add remaining fields in a table
+    basicReportHTML += '<table class="report-table">';
+    basicReportHTML += '<thead><tr><th>Поле</th><th>Износ</th></tr></thead><tbody>';
+    basicReport.slice(6).forEach((header) => {
+        const value = defaultBasicReportValues[header];
+        if (value && value.trim() !== "" && value !== "0.00") {
+            basicReportHTML += `<tr><td><strong>${header}</strong></td><td class="right-align">${formatNumber(parseFloat(value))}</td></tr>`;
+        }
+    });
+    basicReportHTML += '</tbody></table>';
+
+    basicReportHTML += "</div>"; // Close the employee details section
+    basicReportHTML += "</div>"; // Close the basic employee card div
+
+    return basicReportHTML;
+}
+
+// Load default values for basic report on page load
+document.addEventListener("DOMContentLoaded", function () {
+    const basicReportHTML = generateBasicReportHTMLFromDefaults();
+    document.getElementById("basicReport").innerHTML = basicReportHTML;
+});
