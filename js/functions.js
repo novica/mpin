@@ -11,6 +11,9 @@ document
 
     });
 
+// Add an event listener to the "Show Default" button
+document.getElementById("showDefault").addEventListener("click", showDefaultValues);
+
 // Function to generate employee reports
 function generateEmployeeReports(data) {
     console.log("Data:", data); // Debug log
@@ -299,8 +302,8 @@ function generateBasicReportHTMLFromDefaults() {
     return basicReportHTML;
 }
 
-// Load default values for basic report on page load
-document.addEventListener("DOMContentLoaded", function () {
+// Function to load and display default values
+function showDefaultValues() {
     const basicReportHTML = generateBasicReportHTMLFromDefaults();
-    document.getElementById("basicReport").innerHTML = basicReportHTML;
-});
+   document.getElementById("basicReport").innerHTML = basicReportHTML;
+}
